@@ -1,38 +1,41 @@
-# create-svelte
+# Bittensor Technical Assessment
+This repo contains code for the Bittensor Technical Assessment.
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
-## Creating a project
+## Objectives
+My objectives for this assessment are to:
+1. create a dashboard that displays fiat prices for 15 cryptocurrencies in real time
+2. design the dashboard with accessibility in mind, so it is easily usable by visually-impaired and/or keyboard users
+3. integrate analytics
+4. include SEO best practices
+5. enable internationalization
+6. do it all in 2 days of work (or less)!
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Technologies (and why)
+- Svelte 5 (SvelteKit): extremely lightweight and performant (not requiring a browser runtime, unlike React or Vue) and a joy to use
+- Tailwind: allows for rapid prototyping and easy styling
+- Sass: allows for easy styling when Tailwind is not enough
+- GoatCounter: simple, privacy-focused analytics
+- bun: very speedy package manager (though I will also include instructions for npm/yarn)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## How to set up the repo
+1. clone the repo, `git clone git@github.com:ezra-sg/bittensor-technical-assessment.git`
+2. `cd` into the repo, `cd bittensor-technical-assessment`
+3. install dependencies:
+    - using bun: `bun install`
+    - using npm: `npm install`
+    - using yarn: `yarn install`
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## How to run
+1. run the dev server:
+    - using bun: `bun dev`
+    - using npm: `npm run dev`
+    - using yarn: `yarn dev`
+2. open the app in your browser at `http://localhost:5173/`
 
-## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## How to build
+1. run the build script:
+    - using bun: `bun build`
+    - using npm: `npm run build`
+    - using yarn: `yarn build`
