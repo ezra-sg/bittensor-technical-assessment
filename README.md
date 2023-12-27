@@ -8,8 +8,7 @@ My objectives for this assessment are to:
 2. design the dashboard with accessibility in mind, so it is easily usable by visually-impaired and/or keyboard users
 3. integrate analytics
 4. include SEO best practices (including server-side rendering)
-5. enable internationalization
-6. do it all in 2 days of work (or less)!
+5. do it all in 2 days of work (or less)!
 
 ## Technologies (and why)
 - Svelte 5 (SvelteKit): extremely lightweight and performant (not requiring a browser runtime, unlike React or Vue) and a joy to use
