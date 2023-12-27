@@ -7,7 +7,7 @@ My objectives for this assessment are to:
 1. create a dashboard that displays fiat prices for 15 cryptocurrencies in real time
 2. design the dashboard with accessibility in mind, so it is easily usable by visually-impaired and/or keyboard users
 3. integrate analytics
-4. include SEO best practices
+4. include SEO best practices (including server-side rendering)
 5. enable internationalization
 6. do it all in 2 days of work (or less)!
 
