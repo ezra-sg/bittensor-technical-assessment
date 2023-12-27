@@ -14,7 +14,7 @@ My objectives for this assessment are to:
 - Svelte 5 (SvelteKit): extremely lightweight and performant (not requiring a browser runtime, unlike React or Vue) and a joy to use
 - Tailwind: allows for rapid prototyping and easy styling
 - Sass: allows for easy styling when Tailwind is not enough
-- GoatCounter: simple, privacy-focused analytics
+- GoatCounter: simple, privacy-focused analytics (https://ezra-bittensor-assessment.goatcounter.com/)
 - bun: very speedy package manager (though I will also include instructions for npm/yarn)
 
 ## How to set up the repo
