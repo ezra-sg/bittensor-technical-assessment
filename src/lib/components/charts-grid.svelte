@@ -4,9 +4,9 @@
 
     import Chart from '$lib/components/chart.svelte';
 
-    import type { CoinMarketData } from '$lib/types/coingecko-types';
+    import type { CoingeckoCoinData, CoingeckoMarketChartData, ShapedCoinData } from '$lib/types/coingecko-types';
 
-    let marketData: CoinMarketData[] = [];
+    let shapedCoinData: ShapedCoinData[] = [];
     let timeout: null | number = null;
 
     const coinIds = [
@@ -28,20 +28,61 @@
     ];
 
     async function fetchCoinsMarketData() {
-        const response = await queryCoingecko('/coins/markets', {
-            vs_currency: 'usd',
-            ids: coinIds.join(','),
+        const coinMarketDataPromises: Promise<ShapedCoinData>[] = coinIds.map(async (id) => {
+            const coinDataResponse = queryCoingecko(`/coins/${id}`, {
+                localization: 'false',
+                tickers: 'false',
+                market_data: 'false',
+                community_data: 'false',
+                developer_data: 'false',
+            });
+            const marketChartResponse = queryCoingecko('/market_chart', {
+                vs_currency: 'usd',
+                id,
+                days: '7',
+            });
+
+            const [coinDataResponseData, marketChartDataResponseData] = await Promise.all([
+                coinDataResponse,
+                marketChartResponse,
+            ]);
+
+            const [coinData, marketChartData] = (await Promise.all([
+                coinDataResponseData.json(),
+                marketChartDataResponseData.json(),
+            ])) as [CoingeckoCoinData, CoingeckoMarketChartData];
+
+            return {
+                id,
+                name: coinData.name,
+                symbol: coinData.symbol,
+                prices: marketChartData.prices,
+                marketCaps: marketChartData.market_caps,
+                totalVolumes: marketChartData.total_volumes,
+            } as ShapedCoinData;
         });
-        let data = await response.json();
-        const bittensorIndex = data.findIndex((d: CoinMarketData) => d.id === 'bittensor');
+
+        const settledCoinDataPromises = await Promise.allSettled(coinMarketDataPromises);
+        // eztodo: handle errors
+        const fulfilledCoinDataPromises = settledCoinDataPromises.filter(
+            settledPromise => settledPromise.status === 'fulfilled'
+        ) as PromiseFulfilledResult<ShapedCoinData>[];
+
+        let shapedCoinData = fulfilledCoinDataPromises.map(
+            settledPromise => settledPromise.value
+        );
+
+        const bittensorIndex = shapedCoinData.findIndex(
+            d => d.id === 'bittensor'
+        );
 
         // ensure bittensor is first 😇
         if (bittensorIndex !== 0) {
-            const bittensor = data.splice(bittensorIndex, 1);
-            data = bittensor.concat(data);
+            const bittensor = shapedCoinData.splice(bittensorIndex, 1);
+            shapedCoinData = bittensor.concat(shapedCoinData);
         }
 
-        marketData = data;
+        shapedCoinData = shapedCoinData;
     }
 
     onMount(() => {
@@ -61,10 +102,9 @@
     });
 </script>
 
-<div
-    class="grid xl:h-[100svh] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
->
-    {#each marketData as data}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:h-[100svh] xl:grid-cols-5">
+    {#each shapedCoinData as data}
+        { data }
         <Chart />
     {/each}
 </div>

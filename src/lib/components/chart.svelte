@@ -48,11 +48,11 @@
                     let value = Number(this.value);
 
                     if (value >= 1000) {
-                        return (value / 1000) + 'k'; // Converts 1000 to '1k'
+                        return value / 1000 + 'k'; // Converts 1000 to '1k'
                     }
                     return String(value);
-                }
-            }
+                },
+            },
         },
 
         legend: {
@@ -97,7 +97,7 @@
         },
 
         credits: {
-            enabled: false
+            enabled: false,
         },
     };
 
