@@ -5,7 +5,7 @@
     import type { CoinMarketData } from '$lib/types/coingecko-types';
 
     let marketData: CoinMarketData[] = [];
-    let timeout: null | ReturnType<typeof setTimeout> = null;
+    let timeout: null | number = null;
 
     const coinIds = [
         'bittensor',
@@ -53,7 +53,7 @@
     });
 
     onDestroy(() => {
-        if (timeout) {
+        if (timeout !== null) {
             clearInterval(timeout);
         }
     });
