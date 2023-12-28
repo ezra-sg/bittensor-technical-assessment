@@ -107,7 +107,7 @@
     });
 </script>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:h-[100svh] xl:grid-cols-5">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 h-[100svh] xl:grid-cols-5 overflow-y-auto">
     {#if shapedCoinData.length === 0}
         <!-- eztodo loading state -->
         Loading...

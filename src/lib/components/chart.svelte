@@ -1,15 +1,18 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import type { Options } from 'highcharts';
     import highcharts from '$lib/actions/highcharts-action';
     import { formatNearestHour, formatNearestMinute } from '$lib/utils/time-utils';
 
     import type { ShapedCoinData } from '$lib/types/coingecko-types';
+    import throttle from '$lib/utils/throttle';
 
     export let coinData: ShapedCoinData;
 
-    let windowHeight = window?.innerHeight ?? 500;
+    let chartHeight = Math.floor(window?.innerHeight / 3) ?? 500;
     let config: Options | null = null;
+    let fiatValueText = '';
+    let resizeListener: null | (() => void) = null;
 
     $: config = {
         navigator: {
@@ -40,7 +43,7 @@
         },
 
         chart: {
-            height: windowHeight,
+            height: chartHeight,
         },
 
         yAxis: {
@@ -59,7 +62,7 @@
             lineWidth: 0,
             zoomEnabled: false,
             accessibility: {
-                rangeDescription: 'Range: 2010 to 2017',
+                rangeDescription: 'Range: past 24 hours',
             },
             labels: {
                 formatter: function () {
@@ -114,13 +117,47 @@
         credits: {
             enabled: false,
         },
-    };
+    } as Options;
+
+    $: fiatValueText = `${coinData?.prices?.[coinData?.prices?.length - 1]?.[1]?.toFixed(2)}`;
 
     onMount(() => {
-        windowHeight = Math.floor(window.innerHeight / 3);
+        resizeListener = throttle(() => {
+            if (window.innerWidth < 640) {
+                chartHeight = Math.floor(window.innerHeight / 3);
+            } else if (window.innerWidth < 1024) {
+                chartHeight = Math.floor(window.innerHeight / 4);
+            } else if (window.innerWidth < 1280) {
+                chartHeight = Math.floor(window.innerHeight / 3);
+            }else {
+                chartHeight = Math.floor(window.innerHeight / 3) - 32;
+            }
+        }, 100);
+        window.addEventListener('resize', resizeListener);
+
+        resizeListener();
+    });
+
+    onDestroy(() => {
+        if (resizeListener !== null) {
+            window.removeEventListener('resize', resizeListener);
+        }
     });
 </script>
 
 {#if config}
-<div use:highcharts={config}></div>
+<div class="relative">
+    <div use:highcharts={config} class="mt-8"></div>
+
+    <!-- data overlay -->
+    <div class="absolute top-0 left-0 right-0 m-2 columns-2">
+        <div>
+            <h3 class="text-black">{coinData.symbol.toUpperCase()}/USD</h3>
+            <h1 class="text-xl font-bold">{fiatValueText}</h1>
+        </div>
+        <div>
+            text
+        </div>
+    </div>
+</div>
 {/if }
