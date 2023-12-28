@@ -1,32 +1,63 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import highcharts from '$lib/actions/highcharts-action';
 
-    import type { AlignValue, Options, OptionsLayoutValue } from 'highcharts';
+    import type { Options } from 'highcharts';
 
-    let config: Options = {
-        title: {
-            text: 'Solar Employment Growth by Sector, 2010-2016',
+    const config: Options = {
+        navigator: {
+            enabled: false,
         },
 
-        subtitle: {
-            text: 'Source: thesolarfoundation.com',
+        rangeSelector: {
+            enabled: false,
+        },
+
+        scrollbar: {
+            enabled: false,
+        },
+
+        title: {
+            text: '',
+        },
+
+        chart: {
+            height: 500,
         },
 
         yAxis: {
+            gridLineWidth: 0,
+            zoomEnabled: false,
             title: {
-                text: 'Number of Employees',
+                text: '',
+            },
+            labels: {
+                enabled: false,
             },
         },
 
         xAxis: {
+            tickWidth: 0,
+            lineWidth: 0,
+            zoomEnabled: false,
             accessibility: {
                 rangeDescription: 'Range: 2010 to 2017',
             },
+            labels: {
+                formatter: function () {
+                    let value = Number(this.value);
+
+                    if (value >= 1000) {
+                        return (value / 1000) + 'k'; // Converts 1000 to '1k'
+                    }
+                    return String(value);
+                }
+            }
         },
 
         legend: {
-            layout: 'vertical' as OptionsLayoutValue,
-            align: 'right' as AlignValue,
+            layout: 'vertical',
+            align: 'right',
             verticalAlign: 'middle',
         },
 
@@ -44,26 +75,7 @@
                 name: 'Installation',
                 data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175],
                 type: 'line',
-            },
-            {
-                name: 'Manufacturing',
-                data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434],
-                type: 'line',
-            },
-            {
-                name: 'Sales & Distribution',
-                data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387],
-                type: 'line',
-            },
-            {
-                name: 'Project Development',
-                data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227],
-                type: 'line',
-            },
-            {
-                name: 'Other',
-                data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111],
-                type: 'line',
+                showInLegend: false,
             },
         ],
 
@@ -83,7 +95,15 @@
                 },
             ],
         },
+
+        credits: {
+            enabled: false
+        },
     };
+
+    onMount(() => {
+        config.chart!.height = Math.floor(window.innerHeight / 3);
+    });
 </script>
 
-<div use:highcharts={config}></div>
+<div use:highcharts={config} class=""></div>
