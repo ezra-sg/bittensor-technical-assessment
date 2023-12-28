@@ -1,6 +1,6 @@
 export interface CoinMarketData {
     ath: number;
-    ath_change_percentage: number
+    ath_change_percentage: number;
     ath_date: string;
     atl: number;
     atl_change_percentage: number;
@@ -22,11 +22,9 @@ export interface CoinMarketData {
     price_change_24h: number;
     price_change_percentage_24h: number;
     roi: {
-
         times: number;
         currency: string;
         percentage: number;
-
     };
     symbol: string;
     total_supply: number;
