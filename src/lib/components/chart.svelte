@@ -9,7 +9,7 @@
 
     export let coinData: ShapedCoinData;
 
-    let chartHeight = Math.floor(window?.innerHeight / 3) ?? 500;
+    let chartHeight = window?.innerHeight ? Math.floor(window?.innerHeight / 3) : 500;
     let config: Options | null = null;
     let resizeListener: null | (() => void) = null;
     let rootElStyle = '';
