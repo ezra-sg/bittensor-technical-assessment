@@ -211,6 +211,7 @@
 
     onMount(() => {
         resizeListener = throttle(() => {
+            // set the number of charts to display based on screen size
             if (window.innerWidth < 640) {
                 chartHeight = Math.floor(window.innerHeight / 3);
             } else if (window.innerWidth < 1024) {
