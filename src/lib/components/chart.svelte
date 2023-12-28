@@ -39,7 +39,7 @@
 
                 return `
                     <b>${formatNearestMinute(msFromEpoch)}</b><br>
-                    <b>Price:</b> $${this.y?.toFixed(2)}
+                    <b>Price:</b> $${this.y?.toFixed(4)}
                 `;
             },
         },
@@ -147,7 +147,7 @@
         const percentChange = ((lastPrice - firstPrice) / firstPrice) * 100;
         // Calculate opacity, maxing out when percentChange is 10% or more
         let opacity = Math.abs(percentChange / 10);
-        opacity = opacity > 1 ? 1 : opacity; // Cap the opacity at 1
+        opacity = Math.min(Math.max(opacity, 0.3), 1); // clamp opacity between 0.3 and 1
 
         // Convert the opacity to a hex value
         const opacityHex = Math.floor(opacity * 255).toString(16).padStart(2, '0');
@@ -250,9 +250,8 @@
             <span class="text-stone-400">&#8226;</span>
             {changeAmountText}
             <br>
-            <span class="text-xs">H {highValueText}</span>
-            <br>
-            <span class="text-xs">L {lowValueText}</span>
+            <p class="text-xs">H {highValueText}</p>
+            <p class="text-xs">L {lowValueText}</p>
         </div>
     </div>
 </div>
