@@ -1,5 +1,5 @@
 export interface CoingeckoMarketChartData {
-    prices: [number, number][];  // [timestamp, price]
+    prices: [number, number][]; // [timestamp, price]
     market_caps: [number, number][]; // [timestamp, marketCap]
     total_volumes: [number, number][]; // [timestamp, totalVolume]
 }
@@ -11,10 +11,13 @@ export interface CoingeckoCoinData {
     web_slug: string;
     asset_platform_id: string | null;
     platforms: Record<string, string>;
-    detail_platforms: Record<string, {
-        decimal_place: null | number;
-        contract_address: string;
-    }>;
+    detail_platforms: Record<
+        string,
+        {
+            decimal_place: null | number;
+            contract_address: string;
+        }
+    >;
     block_time_in_minutes: number;
     hashing_algorithm: string;
     categories: string[];

@@ -3,7 +3,11 @@
 
     import Chart from '$lib/components/chart.svelte';
 
-    import type { CoingeckoCoinData, CoingeckoMarketChartData, ShapedCoinData } from '$lib/types/coingecko-types';
+    import type {
+        CoingeckoCoinData,
+        CoingeckoMarketChartData,
+        ShapedCoinData,
+    } from '$lib/types/coingecko-types';
     import { shapeQueryParams } from '$lib/utils/text-utils';
 
     let shapedCoinData: ShapedCoinData[] = [];
@@ -40,10 +44,10 @@
             const marketChartRequestParams = shapeQueryParams({
                 vs_currency: 'usd',
                 id,
-                days: '7',
+                days: '1',
             });
 
-            const coinDataResponse    = fetch(`/api/coin-data?${coinDataRequestParams}`);
+            const coinDataResponse = fetch(`/api/coin-data?${coinDataRequestParams}`);
             const marketChartResponse = fetch(`/api/market-data?${marketChartRequestParams}`);
 
             const [coinDataResponseData, marketChartDataResponseData] = await Promise.all([
@@ -69,16 +73,14 @@
         const settledCoinDataPromises = await Promise.allSettled(coinMarketDataPromises);
         // eztodo: handle errors
         const fulfilledCoinDataPromises = settledCoinDataPromises.filter(
-            settledPromise => settledPromise.status === 'fulfilled'
+            (settledPromise) => settledPromise.status === 'fulfilled'
         ) as PromiseFulfilledResult<ShapedCoinData>[];
 
         let newShapedCoinData = fulfilledCoinDataPromises.map(
-            settledPromise => settledPromise.value
+            (settledPromise) => settledPromise.value
         );
 
-        const bittensorIndex = newShapedCoinData.findIndex(
-            d => d.id === 'bittensor'
-        );
+        const bittensorIndex = newShapedCoinData.findIndex((d) => d.id === 'bittensor');
 
         // ensure bittensor is first 😇
         if (bittensorIndex !== 0) {
@@ -91,7 +93,6 @@
 
     onMount(() => {
         // eztodo include coingecko attribution
-        // eztodo: add loading state
 
         fetchCoinsMarketData();
 
@@ -107,8 +108,11 @@
 </script>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:h-[100svh] xl:grid-cols-5">
+    {#if shapedCoinData.length === 0}
+        <!-- eztodo loading state -->
+        Loading...
+    {/if}
     {#each shapedCoinData as data}
-        { data.id }
-        <Chart />
+        <Chart coinData={data} />
     {/each}
 </div>

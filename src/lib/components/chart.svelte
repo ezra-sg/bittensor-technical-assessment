@@ -1,10 +1,17 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import highcharts from '$lib/actions/highcharts-action';
-
     import type { Options } from 'highcharts';
+    import highcharts from '$lib/actions/highcharts-action';
+    import { formatNearestHour, formatNearestMinute } from '$lib/utils/time-utils';
 
-    const config: Options = {
+    import type { ShapedCoinData } from '$lib/types/coingecko-types';
+
+    export let coinData: ShapedCoinData;
+
+    let windowHeight = window?.innerHeight ?? 500;
+    let config: Options | null = null;
+
+    $: config = {
         navigator: {
             enabled: false,
         },
@@ -17,12 +24,23 @@
             enabled: false,
         },
 
+        tooltip: {
+            formatter: function () {
+                const msFromEpoch = Number(this.x);
+
+                return `
+                    <b>${formatNearestMinute(msFromEpoch)}</b><br>
+                    <b>Price:</b> $${this.y?.toFixed(2)}
+                `;
+            },
+        },
+
         title: {
             text: '',
         },
 
         chart: {
-            height: 500,
+            height: windowHeight,
         },
 
         yAxis: {
@@ -45,12 +63,9 @@
             },
             labels: {
                 formatter: function () {
-                    let value = Number(this.value);
+                    const msFromEpoch = Number(this.value);
 
-                    if (value >= 1000) {
-                        return value / 1000 + 'k'; // Converts 1000 to '1k'
-                    }
-                    return String(value);
+                    return formatNearestHour(msFromEpoch);
                 },
             },
         },
@@ -72,8 +87,8 @@
 
         series: [
             {
-                name: 'Installation',
-                data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175],
+                name: 'Price in USD',
+                data: coinData?.prices ?? [],
                 type: 'line',
                 showInLegend: false,
             },
@@ -102,8 +117,10 @@
     };
 
     onMount(() => {
-        config.chart!.height = Math.floor(window.innerHeight / 3);
+        windowHeight = Math.floor(window.innerHeight / 3);
     });
 </script>
 
-<div use:highcharts={config} class=""></div>
+{#if config}
+<div use:highcharts={config}></div>
+{/if }
