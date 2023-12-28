@@ -17,10 +17,11 @@
         'bittensor',
         'bitcoin',
         'ethereum',
+        'telos',
+        'wrapped-telos',
+        'staked-tlos',
         'eos',
         'monero',
-        'telos',
-        'staked-tlos',
         'tether',
         'usd-coin',
         'binancecoin',
@@ -28,7 +29,6 @@
         'matic-network',
         'avalanche-2',
         'litecoin',
-        'shiba',
     ];
 
     async function fetchCoinsMarketData() {
@@ -92,8 +92,6 @@
     }
 
     onMount(() => {
-        // eztodo include coingecko attribution
-
         fetchCoinsMarketData();
 
         // refresh data every 10 seconds
@@ -107,7 +105,7 @@
     });
 </script>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 h-[100svh] xl:grid-cols-5 overflow-y-auto bg-stone-900">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 h-[100svh] xl:grid-cols-5 overflow-y-auto bg-stone-900 gap-1 p-2">
     {#if shapedCoinData.length === 0}
         <!-- eztodo loading state -->
         Loading...

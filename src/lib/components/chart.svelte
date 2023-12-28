@@ -12,11 +12,13 @@
     let chartHeight = Math.floor(window?.innerHeight / 3) ?? 500;
     let config: Options | null = null;
     let resizeListener: null | (() => void) = null;
+    let rootElStyle = '';
     let fiatValueText = '';
     let percentChangeText = '';
     let changeAmountText = '';
     let highValueText = '';
     let lowValueText = '';
+
 
     $: config = {
         navigator: {
@@ -75,6 +77,10 @@
 
                     return formatNearestHour(msFromEpoch);
                 },
+                style: {
+                    color: '#f2f2f2',
+                    fontSize: '10px',
+                },
             },
         },
 
@@ -99,6 +105,7 @@
                 data: coinData?.prices ?? [],
                 type: 'line',
                 showInLegend: false,
+                color: '#f2f2f2',
             },
         ],
 
@@ -124,12 +131,41 @@
         },
     } as Options;
 
+    $: rootElStyle = (() => {
+        if (!coinData.prices) {
+            return '';
+        }
+
+        const prices = coinData.prices;
+        const firstPrice = prices[0]?.[1] ?? 0;
+        const lastPrice = prices[prices.length - 1]?.[1] ?? 0;
+
+        // base colors, obtained from design
+        const greenHex = '#42594F';
+        const redHex = '#92484E';
+
+        const percentChange = ((lastPrice - firstPrice) / firstPrice) * 100;
+        // Calculate opacity, maxing out when percentChange is 10% or more
+        let opacity = Math.abs(percentChange / 10);
+        opacity = opacity > 1 ? 1 : opacity; // Cap the opacity at 1
+
+        // Convert the opacity to a hex value
+        const opacityHex = Math.floor(opacity * 255).toString(16).padStart(2, '0');
+        const colorHex = (percentChange > 0 ? greenHex : redHex) + opacityHex;
+
+        return `background-color: ${colorHex};`;
+    })();
+
     $: fiatValueText = (coinData?.prices?.[coinData?.prices?.length - 1]?.[1] ?? 0).toLocaleString('en-US', {
         maximumFractionDigits: 4,
     });
 
     $: percentChangeText = (() => {
-        const prices = coinData?.prices ?? [];
+        if (!coinData.prices) {
+            return '';
+        }
+
+        const prices = coinData.prices;
         const firstPrice = prices[0]?.[1] ?? 0;
         const lastPrice = prices[prices.length - 1]?.[1] ?? 0;
 
@@ -182,7 +218,9 @@
             } else if (window.innerWidth < 1280) {
                 chartHeight = Math.floor(window.innerHeight / 3);
             }else {
-                chartHeight = Math.floor(window.innerHeight / 3) - 64;
+                const chartMarginTop = 64;
+                const gridPadding = 16;
+                chartHeight = Math.floor(window.innerHeight / 3) - chartMarginTop - gridPadding;
             }
         }, 100);
         window.addEventListener('resize', resizeListener);
@@ -198,7 +236,7 @@
 </script>
 
 {#if config}
-<div class="relative">
+<div class="relative" style="{rootElStyle}">
     <div use:highcharts={config} class="mt-16"></div>
 
     <!-- data overlay -->
