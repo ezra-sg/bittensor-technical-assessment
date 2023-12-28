@@ -1,0 +1,4 @@
+{
+    "prettier.plugins": ["tailwindcss-prettier"],
+    "prettier.parser": "svelte"
+}
