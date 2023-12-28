@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
-    import type { Options } from 'highcharts';
     import highcharts from '$lib/actions/highcharts-action';
     import { formatNearestHour, formatNearestMinute } from '$lib/utils/time-utils';
-
-    import type { ShapedCoinData } from '$lib/types/coingecko-types';
     import throttle from '$lib/utils/throttle';
+
+    import type { Options } from 'highcharts';
+    import type { ShapedCoinData } from '$lib/types/coingecko-types';
 
     export let coinData: ShapedCoinData;
 
