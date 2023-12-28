@@ -1,10 +1,10 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
-    import { queryCoingecko } from '$lib/utils/coingecko-utils';
 
     import Chart from '$lib/components/chart.svelte';
 
     import type { CoingeckoCoinData, CoingeckoMarketChartData, ShapedCoinData } from '$lib/types/coingecko-types';
+    import { shapeQueryParams } from '$lib/utils/text-utils';
 
     let shapedCoinData: ShapedCoinData[] = [];
     let timeout: null | number = null;
@@ -29,18 +29,22 @@
 
     async function fetchCoinsMarketData() {
         const coinMarketDataPromises: Promise<ShapedCoinData>[] = coinIds.map(async (id) => {
-            const coinDataResponse = queryCoingecko(`/coins/${id}`, {
+            const coinDataRequestParams = shapeQueryParams({
+                id,
                 localization: 'false',
                 tickers: 'false',
                 market_data: 'false',
                 community_data: 'false',
                 developer_data: 'false',
             });
-            const marketChartResponse = queryCoingecko('/market_chart', {
+            const marketChartRequestParams = shapeQueryParams({
                 vs_currency: 'usd',
                 id,
                 days: '7',
             });
+
+            const coinDataResponse    = fetch(`/api/coin-data?${coinDataRequestParams}`);
+            const marketChartResponse = fetch(`/api/market-data?${marketChartRequestParams}`);
 
             const [coinDataResponseData, marketChartDataResponseData] = await Promise.all([
                 coinDataResponse,
@@ -68,21 +72,21 @@
             settledPromise => settledPromise.status === 'fulfilled'
         ) as PromiseFulfilledResult<ShapedCoinData>[];
 
-        let shapedCoinData = fulfilledCoinDataPromises.map(
+        let newShapedCoinData = fulfilledCoinDataPromises.map(
             settledPromise => settledPromise.value
         );
 
-        const bittensorIndex = shapedCoinData.findIndex(
+        const bittensorIndex = newShapedCoinData.findIndex(
             d => d.id === 'bittensor'
         );
 
         // ensure bittensor is first 😇
         if (bittensorIndex !== 0) {
-            const bittensor = shapedCoinData.splice(bittensorIndex, 1);
-            shapedCoinData = bittensor.concat(shapedCoinData);
+            const bittensor = newShapedCoinData.splice(bittensorIndex, 1);
+            newShapedCoinData = bittensor.concat(newShapedCoinData);
         }
 
-        shapedCoinData = shapedCoinData;
+        shapedCoinData = newShapedCoinData;
     }
 
     onMount(() => {
@@ -104,7 +108,7 @@
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:h-[100svh] xl:grid-cols-5">
     {#each shapedCoinData as data}
-        { data }
+        { data.id }
         <Chart />
     {/each}
 </div>
