@@ -1,7 +1,7 @@
 <script>
     import '../app.css';
-    import ChartsContainer from '$lib/components/charts-container.svelte';
+    import ChartsGrid from '$lib/components/charts-grid.svelte';
 </script>
 
-
-<ChartsContainer />
+<!-- eztodo favicon -->
+<ChartsGrid />
