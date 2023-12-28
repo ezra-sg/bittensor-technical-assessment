@@ -11,8 +11,12 @@
 
     let chartHeight = Math.floor(window?.innerHeight / 3) ?? 500;
     let config: Options | null = null;
-    let fiatValueText = '';
     let resizeListener: null | (() => void) = null;
+    let fiatValueText = '';
+    let percentChangeText = '';
+    let changeAmountText = '';
+    let highValueText = '';
+    let lowValueText = '';
 
     $: config = {
         navigator: {
@@ -44,6 +48,7 @@
 
         chart: {
             height: chartHeight,
+            backgroundColor: 'transparent',
         },
 
         yAxis: {
@@ -119,7 +124,54 @@
         },
     } as Options;
 
-    $: fiatValueText = `${coinData?.prices?.[coinData?.prices?.length - 1]?.[1]?.toFixed(2)}`;
+    $: fiatValueText = (coinData?.prices?.[coinData?.prices?.length - 1]?.[1] ?? 0).toLocaleString('en-US', {
+        maximumFractionDigits: 4,
+    });
+
+    $: percentChangeText = (() => {
+        const prices = coinData?.prices ?? [];
+        const firstPrice = prices[0]?.[1] ?? 0;
+        const lastPrice = prices[prices.length - 1]?.[1] ?? 0;
+
+        const percentChange = ((lastPrice - firstPrice) / firstPrice) * 100;
+
+        return `${percentChange > 0 ? '+' : ''}${percentChange.toFixed(2)}%`;
+    })();
+
+    $: changeAmountText = (() => {
+        if (!coinData.prices) {
+            return '';
+        }
+
+        const prices = coinData.prices;
+        const firstPrice = prices[0]?.[1] ?? 0;
+        const lastPrice = prices[prices.length - 1]?.[1] ?? 0;
+
+        const changeAmount = lastPrice - firstPrice;
+
+        return `${changeAmount.toLocaleString('en-US', { maximumFractionDigits: 4 })}`;
+    })();
+
+    $: highValueText = (() => {
+        if (!coinData.prices) {
+            return '';
+        }
+
+        const prices = coinData.prices;
+        const highPrice = Math.max(...prices.map((p) => p[1]));
+
+        return `${highPrice.toLocaleString('en-US', { maximumFractionDigits: 4 })}`;
+    })();
+
+    $: lowValueText = (() => {
+        if (!coinData.prices) {
+            return '';
+        }
+        const prices = coinData.prices;
+        const lowPrice = Math.min(...prices.map((p) => p[1]));
+
+        return `${lowPrice.toLocaleString('en-US', { maximumFractionDigits: 4 })}`;
+    })();
 
     onMount(() => {
         resizeListener = throttle(() => {
@@ -130,7 +182,7 @@
             } else if (window.innerWidth < 1280) {
                 chartHeight = Math.floor(window.innerHeight / 3);
             }else {
-                chartHeight = Math.floor(window.innerHeight / 3) - 32;
+                chartHeight = Math.floor(window.innerHeight / 3) - 64;
             }
         }, 100);
         window.addEventListener('resize', resizeListener);
@@ -147,16 +199,22 @@
 
 {#if config}
 <div class="relative">
-    <div use:highcharts={config} class="mt-8"></div>
+    <div use:highcharts={config} class="mt-16"></div>
 
     <!-- data overlay -->
-    <div class="absolute top-0 left-0 right-0 m-2 columns-2">
+    <div class="absolute top-0 left-0 right-0 m-2 columns-2 text-red-50 font-bold">
         <div>
-            <h3 class="text-black">{coinData.symbol.toUpperCase()}/USD</h3>
-            <h1 class="text-xl font-bold">{fiatValueText}</h1>
+            <h3>{coinData.symbol.toUpperCase()}/USD</h3>
+            <h1 class="text-3xl">{fiatValueText}</h1>
         </div>
-        <div>
-            text
+        <div class="text-right">
+            {percentChangeText}
+            <span class="text-stone-400">&#8226;</span>
+            {changeAmountText}
+            <br>
+            <span class="text-xs">H {highValueText}</span>
+            <br>
+            <span class="text-xs">L {lowValueText}</span>
         </div>
     </div>
 </div>
