@@ -38,7 +38,9 @@
 
                 return `
                     <b>${formatNearestMinute(msFromEpoch)}</b><br>
-                    <b>Price:</b> $${this.y?.toFixed(4)}
+                    <b>Price:</b> $${this.y?.toLocaleString('en-US', {
+                        maximumFractionDigits: 4,
+                    })}
                 `;
             },
         },
