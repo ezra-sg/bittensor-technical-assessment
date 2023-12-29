@@ -241,19 +241,17 @@
     <div use:highcharts={config} class="mt-16"></div>
 
     <!-- data overlay -->
-    <div class="absolute top-0 left-0 right-0 m-2 columns-2 text-red-50 font-bold">
-        <div>
-            <h3>{coinData.symbol.toUpperCase()}/USD</h3>
-            <h1 class="text-3xl">{fiatValueText}</h1>
-        </div>
-        <div class="text-right">
-            {percentChangeText}
-            <span class="text-stone-400">&#8226;</span>
-            {changeAmountText}
-            <br>
-            <p class="text-xs">H {highValueText}</p>
-            <p class="text-xs">L {lowValueText}</p>
-        </div>
+    <div class="absolute left-0 top-0 m-2 text-red-50 font-bold">
+        <h3>{coinData.symbol.toUpperCase()}/USD</h3>
+        <h1 class="text-2xl">{fiatValueText}</h1>
+    </div>
+    <div class="absolute right-0 top-0 m-2 text-right whitespace-nowrap text-red-50 font-bold">
+        {percentChangeText}
+        <span class="text-stone-400">&#8226;</span>
+        {changeAmountText}
+        <br>
+        <p class="text-xs">H {highValueText}</p>
+        <p class="text-xs">L {lowValueText}</p>
     </div>
 </div>
 {/if }
