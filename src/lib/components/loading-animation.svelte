@@ -28,7 +28,7 @@
 
             @for $i from 0 through 6 {
                 &:nth-child(#{$i + 1}) {
-                    animation: animate-height 1.5s (#{$i/5})+s infinite linear alternate;
+                    animation: animate-height 1.5s (#{$i/5}) + s infinite linear alternate;
                 }
             }
         }

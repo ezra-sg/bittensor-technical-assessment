@@ -1,6 +1,4 @@
 import { queryCoingeckoApi } from '$lib/utils/api-utils';
-// eztodo handle error
-// import { error } from '@sveltejs/kit';
 
 import type { CoingeckoCoinData } from '$lib/types/coingecko-types';
 

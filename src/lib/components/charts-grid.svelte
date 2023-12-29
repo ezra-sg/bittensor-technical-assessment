@@ -51,7 +51,6 @@
             const coinDataResponse = fetch(`/api/coin-data?${coinDataRequestParams}`);
             const marketChartResponse = fetch(`/api/market-data?${marketChartRequestParams}`);
 
-            // eztodo convert to allsettled?
             const [coinDataResponseData, marketChartDataResponseData] = await Promise.all([
                 coinDataResponse,
                 marketChartResponse,
@@ -74,11 +73,11 @@
 
         const settledCoinDataPromises = await Promise.allSettled(coinMarketDataPromises);
 
-        settledCoinDataPromises.filter(
-            (settledPromise) => settledPromise.status === 'rejected'
-        ).forEach(settledPromise => {
-            console.error((settledPromise as PromiseRejectedResult).reason);
-        })
+        settledCoinDataPromises
+            .filter((settledPromise) => settledPromise.status === 'rejected')
+            .forEach((settledPromise) => {
+                console.error((settledPromise as PromiseRejectedResult).reason);
+            });
 
         const fulfilledCoinDataPromises = settledCoinDataPromises.filter(
             (settledPromise) => settledPromise.status === 'fulfilled'
