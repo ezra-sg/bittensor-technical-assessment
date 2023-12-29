@@ -3,6 +3,7 @@
     import highcharts from '$lib/actions/highcharts-action';
     import { formatNearestHour, formatNearestMinute } from '$lib/utils/time-utils';
     import throttle from '$lib/utils/throttle';
+    import { formatCurrency } from '$lib/utils/text-utils';
 
     import type { Options } from 'highcharts';
     import type { ShapedCoinData } from '$lib/types/coingecko-types';
@@ -53,9 +54,7 @@
 
                 return `
                     <b>${formatNearestMinute(msFromEpoch)}</b><br>
-                    <b>Price:</b> $${this.y?.toLocaleString('en-US', {
-                        maximumFractionDigits: 4,
-                    })}
+                    <b>Price:</b> $${formatCurrency(this.y)}
                 `;
             },
         },
@@ -174,12 +173,7 @@
         return `background-color: ${colorHex};`;
     })();
 
-    $: fiatValueText = (coinData?.prices?.[coinData?.prices?.length - 1]?.[1] ?? 0).toLocaleString(
-        'en-US',
-        {
-            maximumFractionDigits: 4,
-        }
-    );
+    $: fiatValueText = formatCurrency((coinData?.prices?.[coinData?.prices?.length - 1]?.[1] ?? 0));
 
     $: percentChangeText = (() => {
         if (!coinData.prices) {
@@ -206,7 +200,7 @@
 
         const changeAmount = lastPrice - firstPrice;
 
-        return `${changeAmount.toLocaleString('en-US', { maximumFractionDigits: 4 })}`;
+        return `${formatCurrency(changeAmount)}`;
     })();
 
     $: highValueText = (() => {
@@ -217,7 +211,7 @@
         const prices = coinData.prices;
         const highPrice = Math.max(...prices.map((p) => p[1]));
 
-        return `${highPrice.toLocaleString('en-US', { maximumFractionDigits: 4 })}`;
+        return `${formatCurrency(highPrice)}`;
     })();
 
     $: lowValueText = (() => {
@@ -227,7 +221,7 @@
         const prices = coinData.prices;
         const lowPrice = Math.min(...prices.map((p) => p[1]));
 
-        return `${lowPrice.toLocaleString('en-US', { maximumFractionDigits: 4 })}`;
+        return `${formatCurrency(lowPrice)}`;
     })();
 
     onMount(() => {
