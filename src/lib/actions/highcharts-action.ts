@@ -1,11 +1,12 @@
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/modules/stock';
-import 'highcharts/modules/accessibility';
+import HighChartsAccessibility from 'highcharts/modules/accessibility';
 
 import type { HTMLDOMElement, Options } from 'highcharts';
 
 export default (node: string | HTMLDOMElement, config: Options) => {
     Highstock(Highcharts);
+    HighChartsAccessibility(Highcharts);
 
     const redraw = true;
     const oneToOne = true;

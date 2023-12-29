@@ -21,6 +21,7 @@
 
     $: config = {
         accessibility: {
+            enabled: true,
             description: `This chart shows the price of ${coinData.name} (${coinData.symbol}) in USD over the last 24 hours`,
             keyboardNavigation: {
                 enabled: true,
