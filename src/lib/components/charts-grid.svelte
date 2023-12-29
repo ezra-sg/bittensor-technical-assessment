@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
-
+    import { shapeQueryParams } from '$lib/utils/text-utils';
     import Chart from '$lib/components/chart.svelte';
 
     import type {
@@ -8,7 +8,6 @@
         CoingeckoMarketChartData,
         ShapedCoinData,
     } from '$lib/types/coingecko-types';
-    import { shapeQueryParams } from '$lib/utils/text-utils';
 
     let shapedCoinData: ShapedCoinData[] = [];
     let timeout: null | number = null;
