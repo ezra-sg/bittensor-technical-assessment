@@ -20,6 +20,20 @@
     let lowValueText = '';
 
     $: config = {
+        accessibility: {
+            description: `This chart shows the price of ${coinData.name} (${coinData.symbol}) in USD over the last 24 hours`,
+            keyboardNavigation: {
+                enabled: true,
+                focusBorder: {
+                    enabled: true,
+                    hideBrowserFocusOutline: true,
+                },
+                seriesNavigation: {
+                    mode: 'serialize',
+                },
+            },
+        },
+
         navigator: {
             enabled: false,
         },
@@ -243,7 +257,7 @@
 </script>
 
 {#if config}
-    <div class="relative" style={rootElStyle}>
+    <figure class="relative" style={rootElStyle}>
         <div use:highcharts={config} class="mt-16"></div>
 
         <!-- data overlay -->
@@ -251,7 +265,10 @@
             <h3>{coinData.symbol.toUpperCase()}/USD</h3>
             <h1 class="text-2xl">{fiatValueText}</h1>
         </div>
-        <div class="absolute right-0 top-0 m-2 whitespace-nowrap text-right font-bold text-red-50">
+        <div
+            class="absolute right-0 top-0 m-2 whitespace-nowrap text-right font-bold text-red-50"
+            aria-label="Price change data"
+        >
             {percentChangeText}
             <span class="text-stone-400">&#8226;</span>
             {changeAmountText}
@@ -259,5 +276,5 @@
             <p class="text-xs">H {highValueText}</p>
             <p class="text-xs">L {lowValueText}</p>
         </div>
-    </div>
+    </figure>
 {/if}

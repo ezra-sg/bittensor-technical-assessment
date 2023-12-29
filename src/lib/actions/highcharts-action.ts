@@ -1,5 +1,6 @@
 import Highcharts from 'highcharts';
 import Highstock from 'highcharts/modules/stock';
+import 'highcharts/modules/accessibility';
 
 import type { HTMLDOMElement, Options } from 'highcharts';
 
