@@ -30,7 +30,11 @@ export async function GET({ url }) {
         developer_data: developerData,
     };
 
-    const responseData = await queryCoingeckoApi<CoingeckoCoinData>(apiKey, `/coins/${id}`, queryParams);
+    const responseData = await queryCoingeckoApi<CoingeckoCoinData>(
+        apiKey,
+        `/coins/${id}`,
+        queryParams
+    );
 
     return new Response(JSON.stringify(responseData));
 }

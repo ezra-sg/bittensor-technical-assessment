@@ -16,7 +16,7 @@ export function formatNearestHour(millisecondsSinceEpoch: number): string {
 
     // Adjust for AM/PM
     const isPM = hours >= 12;
-    const formattedHour = (hours % 12) || 12; // Converts 0 to 12 for 12 AM
+    const formattedHour = hours % 12 || 12; // Converts 0 to 12 for 12 AM
 
     return `${formattedHour} ${isPM ? 'PM' : 'AM'}`;
 }
@@ -35,7 +35,7 @@ export function formatNearestMinute(millisecondsSinceEpoch: number): string {
 
     // Format for AM/PM
     const isPM = hours >= 12;
-    const formattedHour = (hours % 12) || 12; // Converts 0 to 12 for 12 AM
+    const formattedHour = hours % 12 || 12; // Converts 0 to 12 for 12 AM
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
     return `${formattedHour}:${formattedMinutes} ${isPM ? 'PM' : 'AM'}`;

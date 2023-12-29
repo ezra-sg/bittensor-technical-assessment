@@ -24,7 +24,11 @@ export async function GET({ url }) {
         vs_currency: vsCurrency,
     };
 
-    const responseData = await queryCoingeckoApi<CoingeckoCoinData>(apiKey, `/coins/${id}/market_chart`, queryParams);
+    const responseData = await queryCoingeckoApi<CoingeckoCoinData>(
+        apiKey,
+        `/coins/${id}/market_chart`,
+        queryParams
+    );
 
     return new Response(JSON.stringify(responseData));
 }

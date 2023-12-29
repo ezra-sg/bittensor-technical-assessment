@@ -2,6 +2,7 @@
     import { onDestroy, onMount } from 'svelte';
     import { shapeQueryParams } from '$lib/utils/text-utils';
     import Chart from '$lib/components/chart.svelte';
+    import LoadingAnimation from '$lib/components/loading-animation.svelte';
 
     import type {
         CoingeckoCoinData,
@@ -11,6 +12,7 @@
 
     let shapedCoinData: ShapedCoinData[] = [];
     let timeout: null | number = null;
+    let loading = true;
 
     const coinIds = [
         'bittensor',
@@ -49,6 +51,7 @@
             const coinDataResponse = fetch(`/api/coin-data?${coinDataRequestParams}`);
             const marketChartResponse = fetch(`/api/market-data?${marketChartRequestParams}`);
 
+            // eztodo convert to allsettled?
             const [coinDataResponseData, marketChartDataResponseData] = await Promise.all([
                 coinDataResponse,
                 marketChartResponse,
@@ -70,7 +73,13 @@
         });
 
         const settledCoinDataPromises = await Promise.allSettled(coinMarketDataPromises);
-        // eztodo: handle errors
+
+        settledCoinDataPromises.filter(
+            (settledPromise) => settledPromise.status === 'rejected'
+        ).forEach(settledPromise => {
+            console.error((settledPromise as PromiseRejectedResult).reason);
+        })
+
         const fulfilledCoinDataPromises = settledCoinDataPromises.filter(
             (settledPromise) => settledPromise.status === 'fulfilled'
         ) as PromiseFulfilledResult<ShapedCoinData>[];
@@ -88,6 +97,10 @@
         }
 
         shapedCoinData = newShapedCoinData;
+
+        setTimeout(() => {
+            loading = false;
+        }, 1000);
     }
 
     onMount(() => {
@@ -104,12 +117,14 @@
     });
 </script>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 h-[100svh] xl:grid-cols-5 overflow-y-auto bg-stone-900 gap-1 p-2">
-    {#if shapedCoinData.length === 0}
-        <!-- eztodo loading state -->
-        Loading...
+<div
+    class="grid h-[100svh] grid-cols-1 gap-1 overflow-y-auto bg-stone-900 p-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+>
+    {#if loading}
+        <LoadingAnimation />
+    {:else}
+        {#each shapedCoinData as data}
+            <Chart coinData={data} />
+        {/each}
     {/if}
-    {#each shapedCoinData as data}
-        <Chart coinData={data} />
-    {/each}
 </div>

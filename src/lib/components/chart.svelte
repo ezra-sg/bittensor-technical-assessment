@@ -19,7 +19,6 @@
     let highValueText = '';
     let lowValueText = '';
 
-
     $: config = {
         navigator: {
             enabled: false,
@@ -150,15 +149,20 @@
         opacity = Math.min(Math.max(opacity, 0.3), 1); // clamp opacity between 0.3 and 1
 
         // Convert the opacity to a hex value
-        const opacityHex = Math.floor(opacity * 255).toString(16).padStart(2, '0');
+        const opacityHex = Math.floor(opacity * 255)
+            .toString(16)
+            .padStart(2, '0');
         const colorHex = (percentChange > 0 ? greenHex : redHex) + opacityHex;
 
         return `background-color: ${colorHex};`;
     })();
 
-    $: fiatValueText = (coinData?.prices?.[coinData?.prices?.length - 1]?.[1] ?? 0).toLocaleString('en-US', {
-        maximumFractionDigits: 4,
-    });
+    $: fiatValueText = (coinData?.prices?.[coinData?.prices?.length - 1]?.[1] ?? 0).toLocaleString(
+        'en-US',
+        {
+            maximumFractionDigits: 4,
+        }
+    );
 
     $: percentChangeText = (() => {
         if (!coinData.prices) {
@@ -218,7 +222,7 @@
                 chartHeight = Math.floor(window.innerHeight / 4);
             } else if (window.innerWidth < 1280) {
                 chartHeight = Math.floor(window.innerHeight / 3);
-            }else {
+            } else {
                 const chartMarginTop = 64;
                 const gridPadding = 16;
                 chartHeight = Math.floor(window.innerHeight / 3) - chartMarginTop - gridPadding;
@@ -237,21 +241,21 @@
 </script>
 
 {#if config}
-<div class="relative" style="{rootElStyle}">
-    <div use:highcharts={config} class="mt-16"></div>
+    <div class="relative" style={rootElStyle}>
+        <div use:highcharts={config} class="mt-16"></div>
 
-    <!-- data overlay -->
-    <div class="absolute left-0 top-0 m-2 text-red-50 font-bold">
-        <h3>{coinData.symbol.toUpperCase()}/USD</h3>
-        <h1 class="text-2xl">{fiatValueText}</h1>
+        <!-- data overlay -->
+        <div class="absolute left-0 top-0 m-2 font-bold text-red-50">
+            <h3>{coinData.symbol.toUpperCase()}/USD</h3>
+            <h1 class="text-2xl">{fiatValueText}</h1>
+        </div>
+        <div class="absolute right-0 top-0 m-2 whitespace-nowrap text-right font-bold text-red-50">
+            {percentChangeText}
+            <span class="text-stone-400">&#8226;</span>
+            {changeAmountText}
+            <br />
+            <p class="text-xs">H {highValueText}</p>
+            <p class="text-xs">L {lowValueText}</p>
+        </div>
     </div>
-    <div class="absolute right-0 top-0 m-2 text-right whitespace-nowrap text-red-50 font-bold">
-        {percentChangeText}
-        <span class="text-stone-400">&#8226;</span>
-        {changeAmountText}
-        <br>
-        <p class="text-xs">H {highValueText}</p>
-        <p class="text-xs">L {lowValueText}</p>
-    </div>
-</div>
-{/if }
+{/if}

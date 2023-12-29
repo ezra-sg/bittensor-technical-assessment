@@ -4,4 +4,6 @@
 </script>
 
 <!-- eztodo favicon -->
-<ChartsGrid />
+<div class="bg-stone-950">
+    <ChartsGrid />
+</div>
