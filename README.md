@@ -1,6 +1,9 @@
 # Bittensor Technical Assessment
 
 This repo contains code for the Bittensor Technical Assessment.
+See the application at https://bittensor-technical-assessment.vercel.app/
+
+**Note:** this repo will be deprecated as of Jan 28, 2024, as I will be removing the paid CoinGecko API license at that time.
 
 ## Objectives
 
